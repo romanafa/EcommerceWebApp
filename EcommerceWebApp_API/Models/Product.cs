@@ -5,7 +5,7 @@ namespace EcommerceWebApp_API.Models
     public class Product
     {
         [Key]
-        public int ProductionId { get; set; }
+        public int ProductId { get; set; }
         [Required]
         public string ProductTitle { get; set; }
         public string Description { get; set; }
