@@ -4,6 +4,7 @@ using EcommerceWebApp_API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EcommerceWebApp_API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240129175418_ColumnTypoFix")]
+    partial class ColumnTypoFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,26 +58,6 @@ namespace EcommerceWebApp_API.Migrations
                     b.HasKey("CategoryId");
 
                     b.ToTable("Categories");
-
-                    b.HasData(
-                        new
-                        {
-                            CategoryId = 1,
-                            CategoryTitle = "Accessories",
-                            IsActive = true
-                        },
-                        new
-                        {
-                            CategoryId = 2,
-                            CategoryTitle = "Decorations",
-                            IsActive = true
-                        },
-                        new
-                        {
-                            CategoryId = 3,
-                            CategoryTitle = "Magnets",
-                            IsActive = true
-                        });
                 });
 
             modelBuilder.Entity("EcommerceWebApp_API.Models.Product", b =>
@@ -120,47 +103,6 @@ namespace EcommerceWebApp_API.Migrations
                     b.HasKey("ProductId");
 
                     b.ToTable("Products");
-
-                    b.HasData(
-                        new
-                        {
-                            ProductId = 1,
-                            Colour = "Multi",
-                            CreatedAt = new DateTime(2024, 1, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Handmade headband",
-                            Image = "https://ecommerceproductsimages.blob.core.windows.net/images/IMG_8882.JPG",
-                            IsActive = true,
-                            Price = 200.0,
-                            ProductTitle = "Headband - Easter",
-                            Size = "Onesize",
-                            Stock = 10
-                        },
-                        new
-                        {
-                            ProductId = 2,
-                            Colour = "Multi",
-                            CreatedAt = new DateTime(2024, 1, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Handmade headband",
-                            Image = "https://ecommerceproductsimages.blob.core.windows.net/images/IMG_8884.JPG",
-                            IsActive = true,
-                            Price = 200.0,
-                            ProductTitle = "Headband - Pinky",
-                            Size = "Onesize",
-                            Stock = 10
-                        },
-                        new
-                        {
-                            ProductId = 3,
-                            Colour = "Multi",
-                            CreatedAt = new DateTime(2024, 1, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Handmade headband",
-                            Image = "https://ecommerceproductsimages.blob.core.windows.net/images/IMG_8886.JPG",
-                            IsActive = true,
-                            Price = 200.0,
-                            ProductTitle = "Headband - Summer",
-                            Size = "Onesize",
-                            Stock = 10
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
