@@ -25,5 +25,6 @@ namespace EcommerceWebApp_API.Models
         public List<Category> Categories { get; } = [];
 
 
+
     }
 }
