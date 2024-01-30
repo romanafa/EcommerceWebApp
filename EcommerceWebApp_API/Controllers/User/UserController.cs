@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EcommerceWebApp_API.Controllers.User
 {
-    [Authorize]
+    [Authorize] // All actions here need authentication
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
