@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EcommerceWebApp_API.Models
 {
@@ -10,6 +11,12 @@ namespace EcommerceWebApp_API.Models
         public string CategoryTitle { get; set; }
         public bool IsActive { get; set; }
 
-        public List<Product> Products { get; } = [];
+        public List<ProductCategory> ProductCategories { get; set; }
+
+        [NotMapped]
+        public IEnumerable<Product> Products
+        {
+            get => ProductCategories?.Select(p => p.Product);
+        }
     }
 }

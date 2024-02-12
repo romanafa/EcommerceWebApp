@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EcommerceWebApp_API.Models
 {
@@ -22,7 +23,14 @@ namespace EcommerceWebApp_API.Models
         public string Image { get; set; }
         public DateTime CreatedAt { get; set; }
 
-        public List<Category> Categories { get; } = [];
+        public List<ProductCategory> ProductCategories { get; set; }
+
+        [NotMapped]
+        public IEnumerable<Category> Categories
+        {
+            get => ProductCategories?.Select(c => c.Category);
+        }
+            
 
 
 
