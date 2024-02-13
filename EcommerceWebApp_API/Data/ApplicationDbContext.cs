@@ -34,7 +34,8 @@ namespace EcommerceWebApp_API.Data
                 .HasForeignKey(pc => pc.CategoryId);
 
             // Data seeding
-            //TODO: Seed product categories when API testing is functional 
+
+            // Seed products
             modelBuilder.Entity<Product>().HasData(
                 new Product
                 {
@@ -76,7 +77,7 @@ namespace EcommerceWebApp_API.Data
                     CreatedAt = new System.DateTime(2024, 1, 29)
                 });
 
-
+            // Seed categories
             modelBuilder.Entity<Category>().HasData(
                 new Category
                 {
@@ -98,6 +99,24 @@ namespace EcommerceWebApp_API.Data
                 }
                 );
 
+            // Seed product categories
+            modelBuilder.Entity<ProductCategory>().HasData(
+                new ProductCategory
+                {
+                    ProductId = 1,
+                    CategoryId = 1
+                },
+                new ProductCategory
+                {
+                    ProductId = 2,
+                    CategoryId = 1
+                },
+                new ProductCategory
+                {
+                    ProductId = 3,
+                    CategoryId = 1
+                }
+                );
         }
     }
 }
