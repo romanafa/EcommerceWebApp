@@ -1,4 +1,4 @@
-﻿namespace EcommerceWebApp_API.Models
+﻿namespace EcommerceWebApp_API.Data
 {
     public class ShoppingCartProduct
     {

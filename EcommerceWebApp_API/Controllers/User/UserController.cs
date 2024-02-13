@@ -1,4 +1,4 @@
-﻿using EcommerceWebApp_API.Models;
+﻿using EcommerceWebApp_API.Models.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
