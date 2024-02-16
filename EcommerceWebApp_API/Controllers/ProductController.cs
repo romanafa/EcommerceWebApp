@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure;
 using EcommerceWebApp_API.Data;
 using EcommerceWebApp_API.Models.Product;
 using EcommerceWebApp_API.Services;
@@ -171,6 +172,49 @@ namespace EcommerceWebApp_API.Controllers
             }
         }
 
+        [HttpDelete("{productId}")]
+        public async Task<ActionResult<ApiResponse>> DeleteProduct(int productId)
+        {
+            try
+            {
+                //check if product id is valid
+                if (productId == 0)
+                {
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    _response.IsSuccess = false;
+                    return BadRequest();
+                }
 
+                // check if product exists
+                var product = await _db.Products.FindAsync(productId);
+                if (product == null)
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    return NotFound();
+                }
+
+                //delete product image from blob storage
+                await _blobService.DeleteBlob(product.Image.Split('/').Last(), StringConstants.storageContainer);
+                // wait for 2 seconds to delete image from storage before deleting the product from database 
+                Thread.Sleep(2000); 
+
+                // delete product from database
+                _db.Products.Remove(product);
+                _db.SaveChanges();
+                _response.StatusCode = HttpStatusCode.NoContent;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Errors = new List<string>()
+                {
+                    ex.ToString()
+                };
+            }
+
+            return _response;
+        }
     }
 }
