@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace EcommerceWebApp_API.Static
+namespace EcommerceWebApp_API.Utilities
 {
     // Returns a generic response for all API calls
     public class ApiResponse

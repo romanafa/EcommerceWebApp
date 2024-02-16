@@ -23,8 +23,8 @@ namespace EcommerceWebApp_API.Models.Product
         public bool IsActive { get; set; }
         [Required]
         public IFormFile ImageFile { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt = DateTime.Now;
 
-        //public List<Category> Categories { get; set; }
+        public int CategoryId { get; set; }
     }
 }
