@@ -12,7 +12,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // Connection string for azure image storage
 builder.Services.AddSingleton(x => new BlobServiceClient(
-    builder.Configuration.GetConnectionString("StorageAccount")));
+   builder.Configuration.GetConnectionString("StorageAccount")));
 builder.Services.AddSingleton<IBlobService, BlobService>();
 
 builder.Services.AddIdentity<IdentityUser,IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
