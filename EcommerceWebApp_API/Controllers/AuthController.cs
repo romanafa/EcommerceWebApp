@@ -1,4 +1,5 @@
-﻿using EcommerceWebApp_API.Models;
+﻿using EcommerceWebApp_API.Data;
+using EcommerceWebApp_API.Models.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;

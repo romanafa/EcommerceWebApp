@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 
 
-namespace EcommerceWebApp_API.Models
+namespace EcommerceWebApp_API.Models.User
 {
     public class UserRegistrationModel : IValidatableObject
     {
