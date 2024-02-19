@@ -99,6 +99,21 @@ namespace EcommerceWebApp_API.Controllers
             return Ok();
         }
 
+        private bool IsValidPassword(string password)
+        {
+            // Password requirements: (can be changed) NOTE: length beats complexity
+            // At least 8 characters long
+            // Contains at least one digit
+            // Contains at least one lowercase letter
+            // Contains at least one uppercase letter
+            // Contains at least one special character
+            var passwordPattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$";
+
+            var regex = new System.Text.RegularExpressions.Regex(passwordPattern);
+            return regex.IsMatch(password);
+        }
+
+
         // Eventuelle andre metoder 
     }
 }
