@@ -1,5 +1,4 @@
-﻿using EcommerceWebApp_API.Models;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace EcommerceWebApp_API.Data
@@ -14,13 +13,28 @@ namespace EcommerceWebApp_API.Data
 
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<ProductCategory> ProductCategories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<ProductCategory>()
+                .HasKey(pc => new { pc.ProductId, pc.CategoryId });
+
+            modelBuilder.Entity<ProductCategory>()
+                .HasOne(pc => pc.Product)
+                .WithMany(p => p.ProductCategories)
+                .HasForeignKey(pc => pc.ProductId);
+
+            modelBuilder.Entity<ProductCategory>()
+                .HasOne(pc => pc.Category)
+                .WithMany(c => c.ProductCategories)
+                .HasForeignKey(pc => pc.CategoryId);
+
             // Data seeding
-            //TODO: Seed product categories when API testing is functional 
+
+            // Seed products
             modelBuilder.Entity<Product>().HasData(
                 new Product
                 {
@@ -62,7 +76,7 @@ namespace EcommerceWebApp_API.Data
                     CreatedAt = new System.DateTime(2024, 1, 29)
                 });
 
-
+            // Seed categories
             modelBuilder.Entity<Category>().HasData(
                 new Category
                 {
@@ -84,6 +98,24 @@ namespace EcommerceWebApp_API.Data
                 }
                 );
 
+            // Seed product categories
+            modelBuilder.Entity<ProductCategory>().HasData(
+                new ProductCategory
+                {
+                    ProductId = 1,
+                    CategoryId = 1
+                },
+                new ProductCategory
+                {
+                    ProductId = 2,
+                    CategoryId = 1
+                },
+                new ProductCategory
+                {
+                    ProductId = 3,
+                    CategoryId = 1
+                }
+                );
         }
     }
 }
