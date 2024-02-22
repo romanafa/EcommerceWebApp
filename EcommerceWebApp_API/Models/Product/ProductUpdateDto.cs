@@ -22,7 +22,9 @@ namespace EcommerceWebApp_API.Models.Product
         [Required]
         [DefaultValue(true)]
         public bool IsActive { get; set; }
+        [Required]
         public IFormFile ImageFile { get; set; }
-        //public List<Category> Categories { get; set; }
+        [Required]
+        public int CategoryId { get; set; }
     }
 }
