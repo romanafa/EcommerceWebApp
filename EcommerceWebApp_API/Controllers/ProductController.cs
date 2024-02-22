@@ -172,6 +172,65 @@ namespace EcommerceWebApp_API.Controllers
             }
         }
 
+        [HttpPut("{productId}")]
+        public async Task<ActionResult<ApiResponse>> UpdateProduct(int productId, [FromForm] ProductUpdateDto productDto)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    // check if product id is valid
+                    if (productId != productDto.ProductId)
+                    {
+                        _response.StatusCode = HttpStatusCode.BadRequest;
+                        _response.IsSuccess = false;
+                        return BadRequest();
+                    }
+
+                    // get product from database and check if it exists
+                    var product = await _db.Products.FindAsync(productId);
+                    if (product == null)
+                    {
+                        _response.StatusCode = HttpStatusCode.NotFound;
+                        _response.IsSuccess = false;
+                        return NotFound();
+                    }
+
+                    // update product properties
+                    _mapper.Map(productDto, product);
+                    product.ProductId = productId;
+
+                    // check if file was uploaded and delete old image from blob storage
+                    if (productDto.ImageFile != null && productDto.ImageFile.Length > 0)
+                    {
+                        string imageName = $"{Guid.NewGuid()}{Path.GetExtension(productDto.ImageFile.FileName)}";
+                        await _blobService.DeleteBlob(product.Image.Split('/').Last(), StringConstants.storageContainer);
+                        product.Image = await _blobService.CreateBlob(imageName, StringConstants.storageContainer, productDto.ImageFile);
+                    }
+
+                    // update product in database
+                    _db.Products.Update(product);
+                    await _db.SaveChangesAsync();
+                    _response.StatusCode = HttpStatusCode.NoContent;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.IsSuccess = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Errors = new List<string>()
+                {
+                    ex.ToString()
+                };
+            }
+
+            return _response;
+        }
+
         [HttpDelete("{productId}")]
         public async Task<ActionResult<ApiResponse>> DeleteProduct(int productId)
         {
