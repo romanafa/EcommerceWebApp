@@ -19,7 +19,15 @@ builder.Services.AddSingleton<IBlobService, BlobService>();
 
 builder.Services.AddAutoMapper(typeof(MapperConfig));
 
-builder.Services.AddIdentity<IdentityUser,IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+// Identity with lockout settings (5 minutes lockout time, 5 maximum failed attempts, enabled for new users) --> subject to change
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+{
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5); // lockout time span
+    options.Lockout.MaxFailedAccessAttempts = 5; // maximum failed login attempts
+    options.Lockout.AllowedForNewUsers = true; // whether lockout is enabled for new users
+})
+.AddEntityFrameworkStores<ApplicationDbContext>();
+
 builder.Services.AddControllers().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve); 
 
