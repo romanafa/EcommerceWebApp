@@ -31,8 +31,5 @@ namespace EcommerceWebApp_API.Data
             get => ProductCategories?.Select(c => c.Category);
         }
 
-
-
-
     }
 }
