@@ -41,14 +41,34 @@ builder.Services.AddSwaggerGen();
 builder.Host.UseSerilog((ctx, logConfig) =>
     logConfig.WriteTo.Console().ReadFrom.Configuration(ctx.Configuration));
 
+// CORS configuration
+builder.Services.AddCors( options =>
+{
+    options.AddPolicy("AllowAll", 
+        b => b.AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowAnyOrigin());
+});
+
 var app = builder.Build();
+
+app.UseSwagger();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    app.UseSwaggerUI(C =>
+    {
+        C.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+        C.RoutePrefix = string.Empty;
+    });
+}
+
+app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 

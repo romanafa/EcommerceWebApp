@@ -16,12 +16,14 @@ namespace EcommerceWebApp_API.Controllers
         private readonly ApplicationDbContext _db;
         private readonly IMapper _mapper;
         private ApiResponse _response;
+        private readonly ILogger<CategoryController> _logger;
 
-        public CategoryController(ApplicationDbContext db, IMapper mapper)
+        public CategoryController(ApplicationDbContext db, IMapper mapper, ILogger<CategoryController> logger)
         {
             _db = db;
             _mapper = mapper;
             _response = new ApiResponse();
+            _logger = logger;
         }
 
         [HttpGet]
@@ -29,7 +31,8 @@ namespace EcommerceWebApp_API.Controllers
         {
             if (_db.Categories == null)
             {
-                return NotFound("No categories found");
+                _logger.LogWarning($"Data not found in {nameof(GetCategories)}");
+                return NotFound();
             }
 
             try
@@ -52,6 +55,7 @@ namespace EcommerceWebApp_API.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, $"Error: GET in {nameof(GetCategories)}");
                 _response.StatusCode = HttpStatusCode.InternalServerError;
                 _response.IsSuccess = false;
                 _response.Errors.Add(ex.Message);
@@ -65,10 +69,8 @@ namespace EcommerceWebApp_API.Controllers
             // check if the category is valid
             if (categoryId == 0)
             {
-                _response.StatusCode = HttpStatusCode.BadRequest;
-                _response.IsSuccess = false;
-                _response.Errors.Add("Invalid category id");
-                return BadRequest(_response);
+                _logger.LogWarning($"Invalid category id in {nameof(GetCategory)} - ID: {categoryId}");
+                return BadRequest();
             }
 
             try
@@ -84,9 +86,8 @@ namespace EcommerceWebApp_API.Controllers
                 if (category == null)
                 {
                     // Return not found response
-                    _response.StatusCode = HttpStatusCode.NotFound;
-                    _response.IsSuccess = false;
-                    return NotFound(_response);
+                    _logger.LogWarning($"No data found in {nameof(GetCategory)} - ID: {categoryId}");
+                    return NotFound();
                 }
 
                 // Return category and OK response
@@ -98,6 +99,7 @@ namespace EcommerceWebApp_API.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, $"Error: GET in {nameof(GetCategory)}");
                 _response.StatusCode = HttpStatusCode.InternalServerError;
                 _response.IsSuccess = false;
                 _response.Errors.Add(ex.Message);
@@ -108,7 +110,6 @@ namespace EcommerceWebApp_API.Controllers
         [HttpPost]
         public async Task<ActionResult<Category>> CreateCategory(CategoryCreateDto categoryDto)
         {
-
             try 
             {
                 if (ModelState.IsValid)
@@ -121,18 +122,21 @@ namespace EcommerceWebApp_API.Controllers
 
                     _response.Response = category;
                     _response.StatusCode = HttpStatusCode.Created;
+                    _logger.LogInformation($"Data created in {nameof(CreateCategory)} - ID: {category.CategoryId}");
 
                     // return the created category
                     return CreatedAtAction("GetCategory", new { categoryId = category.CategoryId }, _response);
                 }
                 else
                 {
+                    _logger.LogWarning($"Invalid model state in {nameof(CreateCategory)}");
                     _response.IsSuccess = false;
                     return BadRequest(_response);
                 }
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, $"Error: POST in {nameof(CreateCategory)}");
                 _response.IsSuccess = false;
                 _response.Errors.Add(ex.Message);
                 return BadRequest(_response);
@@ -149,6 +153,7 @@ namespace EcommerceWebApp_API.Controllers
                     // check if category id is valid
                     if (categoryId != categoryDto.CategoryId)
                     {
+                        _logger.LogWarning($"Invalid category id in {nameof(UpdateCategory)} - ID: {categoryId}");
                         _response.StatusCode = HttpStatusCode.BadRequest;
                         _response.IsSuccess = false;
                         _response.Errors.Add("Invalid category id");
@@ -159,6 +164,7 @@ namespace EcommerceWebApp_API.Controllers
                     var category = await _db.Categories.FindAsync(categoryId);
                     if (category == null)
                     {
+                        _logger.LogWarning($"No data found in {nameof(UpdateCategory)} - ID: {categoryId}");
                         _response.StatusCode = HttpStatusCode.NotFound;
                         _response.IsSuccess = false;
                         return NotFound();
@@ -171,6 +177,7 @@ namespace EcommerceWebApp_API.Controllers
                     // update the category in the database
                     _db.Categories.Update(category);
                     await _db.SaveChangesAsync();
+                    _logger.LogInformation($"Data updated in {nameof(UpdateCategory)} - ID: {categoryId}");
                     _response.StatusCode = HttpStatusCode.NoContent;
                     return Ok(_response);
                 }
@@ -181,6 +188,7 @@ namespace EcommerceWebApp_API.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, $"Error: PUT in {nameof(UpdateCategory)}");
                 _response.IsSuccess = false;
                 _response.Errors = new List<string>()
                 {
@@ -199,6 +207,7 @@ namespace EcommerceWebApp_API.Controllers
                 // check if category id is valid
                 if (categoryId == 0)
                 {
+                    _logger.LogWarning($"Invalid category id in {nameof(DeleteCategory)} - ID: {categoryId}");
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     _response.IsSuccess = false;
                     _response.Errors.Add("Invalid category id");
@@ -209,6 +218,7 @@ namespace EcommerceWebApp_API.Controllers
                 var category = await _db.Categories.FindAsync(categoryId);
                 if (category == null)
                 {
+                    _logger.LogWarning($"No data found in {nameof(DeleteCategory)} - ID: {categoryId}");
                     _response.StatusCode = HttpStatusCode.NotFound;
                     _response.IsSuccess = false;
                     return NotFound();
@@ -218,10 +228,12 @@ namespace EcommerceWebApp_API.Controllers
                 _db.Categories.Remove(category);
                 await _db.SaveChangesAsync();
                 _response.StatusCode = HttpStatusCode.NoContent;
+                _logger.LogInformation($"Data deleted in {nameof(DeleteCategory)} - ID: {categoryId}");
                 return Ok(_response);
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, $"Error: DELETE in {nameof(DeleteCategory)}");
                 _response.IsSuccess = false;
                 _response.Errors = new List<string>()
                 {
